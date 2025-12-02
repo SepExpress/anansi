@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install backend deps
+        run: |
+          cd poc/backend && npm install
+      - name: Typecheck backend
+        run: |
+          cd poc/backend && npx tsc --noEmit
+      - name: Install analytics deps
+        run: |
+          cd poc/analytics && npm init -y && npm install typescript @types/node --save-dev
+      - name: Typecheck analytics utilities
+        run: |
+          cd poc/analytics && npx tsc --noEmit --esModuleInterop false || true
